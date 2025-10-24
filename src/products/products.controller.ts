@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -24,8 +25,13 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get() //Method  -> Route Handler Decorator
-  public getProducts() {
-    return this.productsService.getProducts();
+  public getProducts(
+    @Query('name') name: string,
+    @Query('minPrice') minPrice: number,
+    @Query('maxPrice') maxPrice: number,
+  ) {
+    console.log('Query', name);
+    return this.productsService.getProducts(name, minPrice, maxPrice);
   }
 
   @Get(':id')
@@ -35,13 +41,13 @@ export class ProductsController {
 
   @Post()
   @Roles(UserType.ADMIN)
-  @UseGuards(AuthGuard,AuthRolesGuard)
+  @UseGuards(AuthGuard, AuthRolesGuard)
   public addProduct(
     @Body() product: CreateProductDto,
-    @CurrentUser() payload:JWTPayloadType
+    @CurrentUser() payload: JWTPayloadType,
   ) {
     //Make validation run in pipe layer
-    return this.productsService.addProduct( payload.id, product);
+    return this.productsService.addProduct(payload.id, product);
   }
 
   //   @Post('express-based')

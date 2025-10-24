@@ -1,0 +1,29 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type GetProductsResponseType {
+  """List of products"""
+  data: [ProductsGraph!]!
+
+  """Response message"""
+  message: String!
+
+  """Response state"""
+  state: Boolean!
+}
+
+type ProductsGraph {
+  """The unique identifier of the product"""
+  id: Int!
+
+  """The price of the product"""
+  price: Int!
+
+  """The name of the product"""
+  title: String!
+}
+
+type Query {
+  getProducts: GetProductsResponseType!
+}

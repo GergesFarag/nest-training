@@ -5,12 +5,8 @@ export class CreateReviewDto {
     @IsNotEmpty()
     productId: number;
 
-    @IsNumber()
     @IsNotEmpty()
-    userId: number;
-
-    @IsNotEmpty()
-    content: string;
+    comment: string;
     
     @IsNumber()
     rate: number;

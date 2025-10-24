@@ -14,12 +14,15 @@ export class Review {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  rating: number;
+  rate: number;
   @Column()
   comment: string;
-  @ManyToOne(() => Product, (product) => product.reviews)
+  @ManyToOne(() => Product, (product) => product.reviews, {
+    eager: false,
+    onDelete: 'CASCADE',
+  })
   product: Product;
-  @ManyToOne(()=>User , (user) => user.reviews)
+  @ManyToOne(() => User, (user) => user.reviews, { eager: false })
   user: User;
   @CreateDateColumn({
     type: 'timestamp',

@@ -1,8 +1,15 @@
 import { Product } from 'src/products/product.entity';
 import { Review } from 'src/reviews/review.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { UserType } from 'src/utils/enums';
+
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -16,7 +23,7 @@ export class User {
     unique: true,
   })
   email: string;
-  
+
   @Exclude()
   @Column({
     type: 'varchar',
@@ -28,6 +35,19 @@ export class User {
   })
   isVerified: boolean;
 
+  @Column({
+    nullable: true,
+    type: 'varchar',
+  })
+  verificationToken: string | null;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  resetPasswordToken: string | null;
+  
   @Column({
     type: 'enum',
     enum: UserType,
@@ -41,6 +61,24 @@ export class User {
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
 
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  profileImage: string | null;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    precision: 6,
+  })
   createdAt: Date;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    precision: 6,
+  })
   updatedAt: Date;
 }

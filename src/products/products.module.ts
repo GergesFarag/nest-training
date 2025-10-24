@@ -5,13 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), UsersModule  , JwtModule], //* Import the Product entity here
+  imports: [
+    TypeOrmModule.forFeature([Product]),
+    UsersModule,
+    JwtModule,
+  ], //* Import the Product entity here
   controllers: [ProductsController],
   providers: [ProductsService],
-  exports: [],
+  exports: [ProductsService],
 })
 export class ProductsModule {
   constructor() {}

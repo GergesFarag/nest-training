@@ -1,70 +1,50 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Review } from './review.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dtos/create-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Review } from './review.entity';
+import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ReviewsService {
-  private reviews: Review[] = [
-    {
-      id: 1,
-      productId: 1,
-      userId: 1,
-      content: 'Great product!',
-      rate: 5,
-      createdAt: new Date('22-11-2003'),
-    },
-    {
-      id: 2,
-      productId: 1,
-      userId: 2,
-      content: 'Good value for money.',
-      rate: 4,
-      createdAt: new Date('22-11-2003'),
-    },
-    {
-      id: 3,
-      productId: 2,
-      userId: 3,
-      content: 'Not as expected.',
-      rate: 2,
-      createdAt: new Date('22-11-2003'),
-    },
-    {
-      id: 4,
-      productId: 3,
-      userId: 4,
-      content: 'Excellent quality!',
-      rate: 5,
-      createdAt: new Date('22-11-2003'),
-    },
-    {
-      id: 5,
-      productId: 2,
-      userId: 5,
-      content: 'Would buy again.',
-      rate: 4,
-      createdAt: new Date('22-11-2003'),
-    },
-  ];
-  constructor(){}
-  public getReviews() {
-    return this.reviews;
+  constructor(
+    @InjectRepository(Review) private readonly reviewRepo: Repository<Review>,
+    private readonly productService: ProductsService,
+    private readonly userService: UsersService,
+  ) {}
+
+  public getReviews(
+    productId: number,
+    sort: 'ASC' | 'DESC' = 'DESC',
+    page = 1,
+    limit = 10,
+  ) {
+    return this.reviewRepo.find({
+      where: productId ? { product: { id: productId } } : {},
+      order: { createdAt: sort },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
   }
 
-  public addReview(review: CreateReviewDto) {
-    const newReview: Review = {
-      id: this.reviews.length + 1,
+  public async addReview(userId: number, review: CreateReviewDto) {
+    const user = await this.userService.getUserById(userId);
+    const product = await this.productService.getProductById(review.productId);
+    if (!user.data) throw new NotFoundException('User not found');
+    if (!product) throw new NotFoundException('Product not found');
+    const newReview = this.reviewRepo.create({
       ...review,
-      createdAt: new Date(),
-    };
-    return this.reviews.push(newReview) > 0;
+      user: user.data,
+      product: product,
+    });
+    return this.reviewRepo.save(newReview);
   }
+
   public getReviewById(id: number) {
-    return this.reviews.find((review) => review.id === id);
+    return this.reviewRepo.findOne({ where: { id } });
   }
   public deleteReview(reviewId: number) {
-    this.reviews = this.reviews.filter((review) => review.id !== reviewId);
-    return this.reviews.length !== 0;
+    return this.reviewRepo.delete({ id: reviewId });
   }
 }

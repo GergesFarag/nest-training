@@ -14,6 +14,11 @@ import { Product } from './products/product.entity';
 import { Review } from './reviews/review.entity';
 import { User } from './users/user.entity';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { GraphTestModule } from './graph-test/graph-test.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -36,9 +41,18 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
         };
       },
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //For Code First approach
+      playground: true,
+      introspection: true,
+      sortSchema: true,
+    }),
     ProductsModule,
     UsersModule,
     ReviewsModule,
+    GraphTestModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

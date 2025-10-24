@@ -9,7 +9,7 @@ export abstract class BaseProductDto {
 
     @IsNumber()
     @Min(0)
-    @Max(10000)
+    @Max(90000)
     @IsNotEmpty({ message: 'Price must be provided' })
     price: number;
 
