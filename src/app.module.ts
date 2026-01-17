@@ -21,13 +21,16 @@ import { GraphTestModule } from './graph-test/graph-test.module';
 import { MailModule } from './mail/mail.module';
 import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { dataSourceOptions } from 'db/data-source';
+import { dataSourceOptions } from '../db/data-source';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV !== "production" ? `.env.${process.env.NODE_ENV}` : '.env',
+      envFilePath:
+        process.env.NODE_ENV !== 'production'
+          ? `.env.${process.env.NODE_ENV}`
+          : '.env',
     }),
     ThrottlerModule.forRoot({
       throttlers: [
