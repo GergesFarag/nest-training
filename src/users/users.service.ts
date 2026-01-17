@@ -7,15 +7,10 @@ import {
 import { RegisterDTO } from './dtos/register.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dtos/login.dto';
-import { JwtService } from '@nestjs/jwt';
-import { JWTPayloadType } from 'src/utils/types';
 import { User } from './user.entity';
-import { generateJWT } from 'src/utils/auth';
-import { ConfigService } from '@nestjs/config';
 import { UpdateProfileDTO } from './dtos/update-profile.dto';
-import { UserType } from 'src/utils/enums';
+import { UserType } from '../utils/enums';
 import { AuthProvider } from './providers/auth.provider';
 import { join } from 'path';
 import { unlinkSync, existsSync } from 'fs';

@@ -3,8 +3,8 @@ import { CreateReviewDto } from './dtos/create-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './review.entity';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
+import { ProductsService } from '../products/products.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ReviewsService {
@@ -21,7 +21,7 @@ export class ReviewsService {
     limit = 10,
   ) {
     return this.reviewRepo.find({
-      where: productId ? { product: { id: productId } } : {},
+      where: productId ? { productId } : {},
       order: { createdAt: sort },
       skip: (page - 1) * limit,
       take: limit,

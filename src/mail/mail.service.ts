@@ -1,6 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { LoginDTO } from 'src/users/dtos/login.dto';
+import { LoginDTO } from '../users/dtos/login.dto';
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
@@ -47,7 +47,7 @@ export class MailService {
         from: 'no-reply@Gerges-NestJS',
         subject: 'Verify Your Email',
         date: today.toDateString(),
-        template: 'resetPassword' ,
+        template: 'resetPassword',
         context: { link },
       });
       console.log(response);

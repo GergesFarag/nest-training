@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dtos/create-review.dto';
-import { AuthGuard } from 'src/users/guards/auth.guard';
-import { CurrentUser } from 'src/users/decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/utils/types';
+import { AuthGuard } from '../users/guards/auth.guard';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { JWTPayloadType } from '../utils/types';
 import { CreateReviewResInterceptor } from './interceptors/create-review-res.interceptor';
 
 @Controller('reviews')
@@ -23,7 +23,7 @@ export class ReviewsController {
   @UseGuards(AuthGuard)
   @Get()
   public getReviews(
-    @Query('productId', ParseIntPipe) productId: number,
+    @Query('productId') productId: number,
     @Query('sort') sort: 'ASC' | 'DESC' = 'DESC',
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
     @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,

@@ -8,8 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { AuthProvider } from './providers/auth.provider';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { MailModule } from 'src/mail/mail.module';
-import { MailService } from 'src/mail/mail.service';
+import { MailModule } from '../mail/mail.module';
+
 @Module({
   imports: [
     MailModule,

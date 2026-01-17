@@ -13,24 +13,52 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { AuthGuard } from 'src/users/guards/auth.guard';
-import { CurrentUser } from 'src/users/decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/utils/types';
-import { AuthRolesGuard } from 'src/users/guards/auth-roles.guard';
-import { Roles } from 'src/users/decorators/user-role.decorator';
-import { UserType } from 'src/utils/enums';
+import { AuthGuard } from '../users/guards/auth.guard';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { JWTPayloadType } from '../utils/types';
+import { AuthRolesGuard } from '../users/guards/auth-roles.guard';
+import { Roles } from '../users/decorators/user-role.decorator';
+import { UserType } from '../utils/enums';
+import {
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiSecurity,
+} from '@nestjs/swagger';
 
 @Controller('products') //Class Decorator
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get() //Method  -> Route Handler Decorator
+  @ApiOperation({ summary: 'Get all products with optional filters' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of products retrieved successfully',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    type: String,
+    description: 'Filter products by name',
+  })
+  @ApiQuery({
+    name: 'minPrice',
+    required: false,
+    type: String,
+    description: 'Filter products by minimum price',
+  })
+  @ApiQuery({
+    name: 'maxPrice',
+    required: false,
+    type: String,
+    description: 'Filter products by maximum price',
+  })
   public getProducts(
-    @Query('name') name: string,
-    @Query('minPrice') minPrice: number,
-    @Query('maxPrice') maxPrice: number,
+    @Query('name') name?: string,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
   ) {
-    console.log('Query', name);
     return this.productsService.getProducts(name, minPrice, maxPrice);
   }
 
@@ -42,6 +70,7 @@ export class ProductsController {
   @Post()
   @Roles(UserType.ADMIN)
   @UseGuards(AuthGuard, AuthRolesGuard)
+  @ApiSecurity('Bearer')
   public addProduct(
     @Body() product: CreateProductDto,
     @CurrentUser() payload: JWTPayloadType,
@@ -62,6 +91,9 @@ export class ProductsController {
   //   }
 
   @Put(':id')
+  @UseGuards(AuthGuard, AuthRolesGuard)
+  @Roles(UserType.ADMIN)
+  @ApiSecurity('Bearer')
   public updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() product: UpdateProductDto,
@@ -70,6 +102,9 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, AuthRolesGuard)
+  @Roles(UserType.ADMIN)
+  @ApiSecurity('Bearer')
   public deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.deleteProduct(id);
   }

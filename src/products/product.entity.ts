@@ -2,13 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CURRENT_TIMESTAMP } from 'src/utils/constants';
-import { Review } from 'src/reviews/review.entity';
-import { User } from 'src/users/user.entity';
+import { CURRENT_TIMESTAMP } from '../utils/constants';
+import { Review } from '../reviews/review.entity';
+import { User } from '../users/user.entity';
+
 @Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn()
@@ -42,6 +44,10 @@ export class Product {
   })
   reviews: Review[];
 
+  @Column({ nullable: true })
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.products, { eager: false })
+  @JoinColumn({ name: 'userId' })
   user: User;
 }

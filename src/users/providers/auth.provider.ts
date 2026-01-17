@@ -2,23 +2,21 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  RequestTimeoutException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDTO } from '../dtos/register.dto';
 import * as bcrypt from 'bcrypt';
-import { JWTPayloadType } from 'src/utils/types';
-import { generateJWT, generateVLink } from 'src/utils/auth';
+import { JWTPayloadType } from '../../utils/types';
+import { generateJWT, generateVLink } from '../../utils/auth';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDTO } from '../dtos/login.dto';
-import { MailerService } from '@nestjs-modules/mailer';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../../mail/mail.service';
 import { randomBytes } from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { config } from 'process';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
+
 @Injectable()
 export class AuthProvider {
   constructor(
@@ -76,7 +74,7 @@ export class AuthProvider {
     if (!isMatch)
       throw new BadRequestException('Email or password is incorrect');
     if (!isExists.isVerified) {
-      let vToken: string = '';
+      let vToken = isExists.verificationToken as string;
       if (!isExists.verificationToken) {
         isExists.verificationToken = randomBytes(32).toString('hex');
         vToken = (await this.usersRepo.save(isExists))

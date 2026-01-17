@@ -1,5 +1,5 @@
-import { Product } from 'src/products/product.entity';
-import { Review } from 'src/reviews/review.entity';
+import { Product } from '../products/product.entity';
+import { Review } from '../reviews/review.entity';
 import {
   Column,
   Entity,
@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { UserType } from 'src/utils/enums';
+import { UserType } from '../utils/enums';
 
 @Entity({ name: 'users' })
 export class User {
@@ -47,7 +47,7 @@ export class User {
     default: null,
   })
   resetPasswordToken: string | null;
-  
+
   @Column({
     type: 'enum',
     enum: UserType,

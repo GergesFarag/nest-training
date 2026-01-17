@@ -14,7 +14,7 @@ export class LoggerInterceptor implements NestInterceptor {
     console.log('Before Route Handler');
     //* WILL RUN BEFORE ROUTE HANDLER
     return next.handle().pipe(
-      map((response:{message:string , data:any}) => {
+      map((response: { message: string; data: any }) => {
         const { data } = response;
         const { password, ...others } = data;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return

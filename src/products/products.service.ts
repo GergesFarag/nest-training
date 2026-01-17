@@ -4,7 +4,7 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 import { Between, Like, Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable({})
 export class ProductsService {
@@ -21,11 +21,13 @@ export class ProductsService {
   ): Promise<Product[]> {
     const filters = {
       ...(name ? { name: Like(`%${name}%`) } : {}),
-      ...(minPrice && maxPrice ? { price: Between(minPrice, maxPrice) } : {}),
+      ...(minPrice && maxPrice ? { price: Between(+minPrice, +maxPrice) } : {}),
     };
-    return await this.productRepository.find({
+    const products = await this.productRepository.find({
       where: filters,
     });
+    console.log('PRODUCTS : ', products);
+    return products;
   }
 
   public async addProduct(
@@ -44,7 +46,9 @@ export class ProductsService {
   }
 
   public async getProductById(id: number): Promise<Product> {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({
+      where: { id },
+    });
     if (!product) {
       throw new NotFoundException('Product with given ID not found', {
         description: 'Please provide a valid product ID',
