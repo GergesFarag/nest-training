@@ -15,5 +15,11 @@ export const dataSourceOptions: DataSourceOptions = {
   entities: [User, Product, Review],
   migrations: ['dist/db/migrations/*.js'],
 };
-
-export const dataSource = new DataSource(dataSourceOptions);
+let dataSource: DataSource;
+export const getDataSource = async () => {
+  if (!dataSource) {
+    dataSource = new DataSource(dataSourceOptions);
+    await dataSource.initialize();
+  }
+  return dataSource;
+};
