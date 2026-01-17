@@ -45,6 +45,7 @@
     "ejs": "^3.1.10",
     "graphql": "^16.11.0",
     "helmet": "^8.1.0",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
