@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthProvider } from './providers/auth.provider';
 import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import multer, { diskStorage } from 'multer';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
@@ -28,15 +28,18 @@ import { MailModule } from '../mail/mail.module';
       },
     }),
     MulterModule.register({
-      storage: diskStorage({
-        destination: './uploads/profile-images',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const fileName = `${uniqueSuffix}-${file.originalname}`;
-          cb(null, fileName);
-        },
-      }),
+      storage:
+        process.env.NODE_ENV === 'development'
+          ? diskStorage({
+              destination: './uploads/profile-images',
+              filename: (req, file, cb) => {
+                const uniqueSuffix =
+                  Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const fileName = `${uniqueSuffix}-${file.originalname}`;
+                cb(null, fileName);
+              },
+            })
+          : multer.memoryStorage(),
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
           cb(new Error('Unsupported file type'), false);
