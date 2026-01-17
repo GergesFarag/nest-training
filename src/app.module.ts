@@ -43,7 +43,10 @@ import { dataSourceOptions } from '../db/data-source';
     TypeOrmModule.forRoot(dataSourceOptions),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //For Code First approach
+      autoSchemaFile:
+        process.env.NODE_ENV !== 'production'
+          ? join(process.cwd(), 'src/schema.gql')
+          : true, //For Code First approach
       playground: true,
       introspection: true,
       sortSchema: true,
