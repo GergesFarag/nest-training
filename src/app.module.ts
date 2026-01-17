@@ -11,11 +11,8 @@ import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './products/product.entity';
-import { Review } from './reviews/review.entity';
-import { User } from './users/user.entity';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -30,7 +27,7 @@ import { dataSourceOptions } from 'db/data-source';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: process.env.NODE_ENV !== "production" ? `.env.${process.env.NODE_ENV}` : '.env',
     }),
     ThrottlerModule.forRoot({
       throttlers: [
